@@ -3,8 +3,50 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FcGoogle } from "react-icons/fc";
 import { LiaShopware } from "react-icons/lia";
+import { useNavigate } from "react-router-dom";
+import { validateForm } from "../lib/common";
+import { toast } from "react-hot-toast";
 
 const SignUpPage = () => {
+  const navigate = useNavigate();
+  const signUpBtnHandler = async (e) => {
+    try {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const formJson = Object.fromEntries(formData);
+      const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      if (!validateForm(e.target)) {
+        return toast.error("Invalid inputs");
+      }
+
+      if (!regex.test(formJson.email.trim())) {
+        return toast.error("Invalid Email");
+      }
+
+      if (formJson.password !== formJson.confirmPassword) {
+        return toast.error("Password is not matched");
+      }
+
+      if (formJson.password.length < 6) {
+        return toast.error("Password is minium 6 charcters required");
+      }
+
+      localStorage.setItem(
+        "auth",
+        JSON.stringify({
+          email: formJson.email,
+          password: formJson.password,
+          isLogin: false,
+        })
+      );
+
+      navigate("/login");
+      toast.success("Signup successfully");
+    } catch (err) {
+      console.error(err);
+    }
+  };
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
       <div className="flex flex-col gap-4 p-6 md:p-10">
@@ -18,7 +60,11 @@ const SignUpPage = () => {
         </div>
         <div className="flex flex-1 items-center justify-center">
           <div className="w-full max-w-xs">
-            <form className="flex flex-col gap-6">
+            <form
+              className="flex flex-col gap-6"
+              onSubmit={signUpBtnHandler}
+              noValidate
+            >
               <div className="flex flex-col items-center gap-2 text-center">
                 <h1 className="text-2xl font-bold">Sign up</h1>
                 <p className="text-muted-foreground text-sm text-balance">
@@ -29,8 +75,9 @@ const SignUpPage = () => {
                 <div className="grid gap-3">
                   <Label htmlFor="email">Email</Label>
                   <Input
-                    id="email"
                     type="email"
+                    id="email"
+                    name="email"
                     placeholder="m@example.com"
                     required
                   />
@@ -40,24 +87,29 @@ const SignUpPage = () => {
                     <Label htmlFor="password">Password</Label>
                   </div>
                   <Input
-                    id="password"
                     type="password"
+                    id="password"
+                    name="password"
                     placeholder="password"
                     required
                   />
                 </div>
                 <div className="grid gap-3">
                   <div className="flex items-center">
-                    <Label htmlFor="password">Confirm Password</Label>
+                    <Label htmlFor="confirmPassword">Confirm Password</Label>
                   </div>
                   <Input
-                    id="password"
                     type="password"
+                    id="confirmPassword"
+                    name="confirmPassword"
                     placeholder="password"
                     required
                   />
                 </div>
-                <Button type="submit" className="w-full">
+                <Button
+                  type="submit"
+                  className="w-full hover:cursor-pointer py-4"
+                >
                   Signup
                 </Button>
                 <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
@@ -72,9 +124,12 @@ const SignUpPage = () => {
               </div>
               <div className="text-center text-sm">
                 Already you have an account?{" "}
-                <a href="#" className="underline underline-offset-4">
+                <span
+                  className="underline underline-offset-4 hover:cursor-pointer"
+                  onClick={() => navigate("/login")}
+                >
                   Login
-                </a>
+                </span>
               </div>
             </form>
           </div>

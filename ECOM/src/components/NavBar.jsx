@@ -20,16 +20,27 @@ import { Badge } from "@/components/ui/badge";
 import { HiOutlineShoppingBag } from "react-icons/hi";
 import { Input } from "./ui/input";
 import { Search } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const NavBar = () => {
   const { setTheme } = useTheme();
+  const navigate = useNavigate();
+
+  const logOutHandler = () => {
+    const auth = { email: "", password: "", isLogin: false };
+    localStorage.setItem("auth", JSON.stringify(auth));
+    navigate("/");
+  };
   return (
-    <div className="flex gap-2 items-center justify-between w-full p-1">
-      <div className="text-xl flex items-center justify-center gap-3 font-semibold">
+    <div className="flex gap-2 items-center justify-between w-full p-4">
+      <div
+        className="text-xl flex items-center justify-center gap-3 font-semibold hover:cursor-pointer"
+        onClick={() => navigate("/")}
+      >
         <LiaShopware className="size-8" />
         Ecom .
       </div>
-      <div className="relative min-w-xs">
+      <div className="relative min-w-xs hidden md:block">
         <Search className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4" />
         <Input
           type="text"
@@ -38,14 +49,17 @@ const NavBar = () => {
         />
       </div>
       <div className="flex items-center gap-8 pe-5">
-        <div className="cursor-pointer flex flex-col items-center gap-1 relative">
+        <div
+          className="cursor-pointer flex flex-col items-center gap-1 relative"
+          onClick={() => navigate("/cart")}
+        >
           <HiOutlineShoppingBag className="text-xl" />
           <span className="text-xs">Cart</span>
           <Badge
             variant="default"
             className="rounded-full w-5 h-5 bg-green-600 absolute -top-2 left-5"
           >
-            4
+            2
           </Badge>
         </div>
         <div className="cursor-pointer flex flex-col items-center gap-1">
@@ -95,7 +109,7 @@ const NavBar = () => {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={logOutHandler}>
               Log out
               <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
             </DropdownMenuItem>

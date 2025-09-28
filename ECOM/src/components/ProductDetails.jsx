@@ -16,19 +16,20 @@ const productDetails = {
 
 export default function ProductDetailsColumns() {
   return (
-    <div className="flex flex-col gap-6">
-      {/* Description */}
-      <div className="border rounded-md p-4 shadow-sm">
+    <div className="flex flex-col gap-6 mt-4 w-full">
+      <div className="border rounded-md p-4 shadow-sm w-full">
         <h3 className="text-lg font-semibold mb-2">Description</h3>
         <p className="text-gray-700">{productDetails.description}</p>
       </div>
 
-      {/* Specifications */}
       <div className="border rounded-md p-4 shadow-sm">
         <h3 className="text-lg font-semibold mb-2">Specifications</h3>
-        <div className="grid grid-cols-2 gap-2 text-gray-700">
+        <div className="flex flex-col gap-2 text-gray-700">
           {Object.entries(productDetails.specifications).map(([key, value]) => (
-            <div key={key} className="flex justify-between border-b py-1">
+            <div
+              key={key}
+              className="flex justify-between border-b py-1 last:border-none"
+            >
               <span className="font-medium">{key}</span>
               <span>{value}</span>
             </div>
@@ -36,7 +37,6 @@ export default function ProductDetailsColumns() {
         </div>
       </div>
 
-      {/* Shipping & Care */}
       <div className="border rounded-md p-4 shadow-sm space-y-4">
         <div>
           <h3 className="text-lg font-semibold mb-2">Shipping</h3>

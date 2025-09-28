@@ -3,8 +3,43 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FcGoogle } from "react-icons/fc";
 import { LiaShopware } from "react-icons/lia";
+import { useNavigate } from "react-router-dom";
+import { validateForm } from "../lib/common";
+import { toast } from "react-hot-toast";
 
 const LoginPage = () => {
+  const navigate = useNavigate();
+  const logInBtnHandler = async (e) => {
+    try {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const formJson = Object.fromEntries(formData);
+      const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      if (!validateForm(e.target)) {
+        return toast.error("Invalid inputs");
+      }
+
+      const auth = JSON.parse(localStorage.getItem("auth"));
+      const { email, password } = auth ?? {};
+
+      if (formJson.email !== email) {
+        return toast.error("User not found !");
+      }
+
+      if (formJson.password !== password) {
+        return toast.error("Password is incorrect !");
+      }
+
+      auth.isLogin = true;
+      localStorage.setItem("auth", JSON.stringify(auth));
+
+      navigate("/");
+      toast.success("Login successfully");
+    } catch (err) {
+      console.error(err);
+    }
+  };
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
       <div className="flex flex-col gap-4 p-6 md:p-10">
@@ -18,7 +53,11 @@ const LoginPage = () => {
         </div>
         <div className="flex flex-1 items-center justify-center">
           <div className="w-full max-w-xs">
-            <form className="flex flex-col gap-6">
+            <form
+              className="flex flex-col gap-6"
+              onSubmit={logInBtnHandler}
+              noValidate
+            >
               <div className="flex flex-col items-center gap-2 text-center">
                 <h1 className="text-2xl font-bold">Login</h1>
                 <p className="text-muted-foreground text-sm text-balance">
@@ -29,8 +68,9 @@ const LoginPage = () => {
                 <div className="grid gap-3">
                   <Label htmlFor="email">Email</Label>
                   <Input
-                    id="email"
                     type="email"
+                    id="email"
+                    name="email"
                     placeholder="m@example.com"
                     required
                   />
@@ -46,13 +86,14 @@ const LoginPage = () => {
                     </a>
                   </div>
                   <Input
-                    id="password"
                     type="password"
+                    id="password"
+                    name="password"
                     placeholder="password"
                     required
                   />
                 </div>
-                <Button type="submit" className="w-full">
+                <Button type="submit" className="w-full hover:cursor-pointer">
                   Login
                 </Button>
                 <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
@@ -60,16 +101,19 @@ const LoginPage = () => {
                     Or continue with
                   </span>
                 </div>
-                <Button variant="outline" className="w-full">
+                <Button variant="outline" className="w-full ">
                   <FcGoogle />
                   Login with Google
                 </Button>
               </div>
               <div className="text-center text-sm">
                 Don&apos;t have an account?{" "}
-                <a href="#" className="underline underline-offset-4">
+                <span
+                  className="underline underline-offset-4 hover:cursor-pointer"
+                  onClick={() => navigate("/signup")}
+                >
                   Sign up
-                </a>
+                </span>
               </div>
             </form>
           </div>

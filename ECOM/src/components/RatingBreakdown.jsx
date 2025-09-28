@@ -13,12 +13,10 @@ const ratingData = {
   ],
 };
 
-export default function RatingBreakdown() {
+const RatingBreakdown = ({ rating }) => {
   const maxCount = Math.max(...ratingData.breakdown.map((b) => b.count));
-
   return (
     <div className="max-w-md p-4 border rounded-md shadow-sm">
-      {/* Average Rating */}
       <div className="flex items-center gap-2 mb-4">
         <span className="text-2xl font-bold">
           {ratingData.average.toFixed(1)}
@@ -29,8 +27,8 @@ export default function RatingBreakdown() {
               key={i}
               size={20}
               className={
-                i < Math.round(ratingData.average)
-                  ? "text-yellow-500"
+                i + 1 < rating
+                  ? "text-yellow-500 fill-yellow-500"
                   : "text-gray-300"
               }
             />
@@ -41,16 +39,15 @@ export default function RatingBreakdown() {
         </span>
       </div>
 
-      {/* Rating Breakdown */}
       <div className="space-y-2">
         {ratingData.breakdown.map((item) => {
           const widthPercent = (item.count / maxCount) * 100;
           return (
             <div key={item.stars} className="flex items-center gap-2">
               <span className="w-6 text-sm">{item.stars}★</span>
-              <div className="flex-1 h-3 bg-gray-200 rounded overflow-hidden">
+              <div className="flex-1 h-2 bg-gray-200 rounded-xs overflow-hidden">
                 <div
-                  className="h-3 bg-yellow-500"
+                  className="h-2 bg-yellow-500"
                   style={{ width: `${widthPercent}%` }}
                 ></div>
               </div>
@@ -61,4 +58,6 @@ export default function RatingBreakdown() {
       </div>
     </div>
   );
-}
+};
+
+export default RatingBreakdown;
