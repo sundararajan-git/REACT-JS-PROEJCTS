@@ -3,16 +3,16 @@ import "./App.css";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
-import ProtectedLayout from "./layouts/ProtectedLayout";
+import AuthLayout from "./layouts/AuthLayout";
 
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<ProtectedLayout />}>
+      <Route path="/" element={<AuthLayout />}>
         <Route index element={<HomePage />} />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/login" element={<LoginPage />} />
       </Route>
-      <Route path="/signup" element={<SignupPage />} />
-      <Route path="/login" element={<LoginPage />} />
     </Routes>
   );
 }

@@ -15,11 +15,19 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useTheme } from "@/components/theme-provider";
+import { useNavigate } from "react-router-dom";
 
 const NavBar = () => {
   const { setTheme } = useTheme();
+  const navigate = useNavigate();
+
+  const logOutHandler = () => {
+    const auth = { email: "", password: "", isLogin: false };
+    localStorage.setItem("auth", JSON.stringify(auth));
+    navigate("/");
+  };
   return (
-    <div className="flex gap-2 items-center justify-between w-full">
+    <div className="flex gap-2 items-center justify-between w-full p-4">
       <div className="text-xl flex items-center justify-center gap-3 font-semibold">
         <SiAuthy className="text-primary" />
         AUTH .
@@ -95,7 +103,7 @@ const NavBar = () => {
             <DropdownMenuItem>Support</DropdownMenuItem>
             <DropdownMenuItem disabled>API</DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={logOutHandler}>
               Log out
               <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
             </DropdownMenuItem>

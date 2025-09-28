@@ -10,8 +10,39 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SiAuthy } from "react-icons/si";
 import { ModeToggle } from "../components/mode-toggle";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import { validateForm } from "../lib/common";
 
 const LoginPage = () => {
+  const navigate = useNavigate();
+  const signInBtnHandler = async (e) => {
+    try {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const formJson = Object.fromEntries(formData);
+      const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      if (!validateForm(e.target)) {
+        return toast.error("Invalid inputs");
+      }
+
+      const auth = JSON.parse(localStorage.getItem("auth"));
+      const { email, password } = auth ?? {};
+
+      if (formJson.email !== email || formJson.password !== password) {
+        return toast.error("User not found !");
+      }
+
+      auth.isLogin = true;
+      localStorage.setItem("auth", JSON.stringify(auth));
+
+      navigate("/");
+      toast.success("Login successfully");
+    } catch (err) {
+      console.error(err);
+    }
+  };
   return (
     <div className="min-h-svh flex flex-col items-center justify-center">
       <div className="flex flex-col gap-6">
@@ -27,14 +58,15 @@ const LoginPage = () => {
             <CardDescription>Welcome back</CardDescription>
           </CardHeader>
           <CardContent>
-            <form>
+            <form onSubmit={signInBtnHandler} noValidate>
               <div className="grid gap-6">
                 <div className="grid gap-6">
                   <div className="grid gap-3">
                     <Label htmlFor="email">Email</Label>
                     <Input
-                      id="email"
                       type="email"
+                      id="email"
+                      name="email"
                       placeholder="m@example.com"
                       required
                     />
@@ -50,24 +82,28 @@ const LoginPage = () => {
                       </a>
                     </div>
                     <Input
-                      id="password"
                       type="password"
+                      id="password"
+                      name="password"
                       required
                       placeholder="password"
                     />
                   </div>
                   <Button
                     type="submit"
-                    className="w-full cursor-pointer text-white"
+                    className="w-full cursor-pointer text-white "
                   >
                     Login
                   </Button>
                 </div>
                 <div className="text-center text-sm">
                   Don&apos;t have an account?{" "}
-                  <a href="#" className="underline underline-offset-4">
+                  <span
+                    className="underline underline-offset-4 cursor-pointer"
+                    onClick={() => navigate("/signup")}
+                  >
                     Sign up
-                  </a>
+                  </span>
                 </div>
               </div>
             </form>

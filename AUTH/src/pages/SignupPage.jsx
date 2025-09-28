@@ -10,8 +10,50 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SiAuthy } from "react-icons/si";
 import { ModeToggle } from "../components/mode-toggle";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import { validateForm } from "../lib/common";
 
 const SignupPage = () => {
+  const navigate = useNavigate();
+  const signUpBtnHandler = async (e) => {
+    try {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const formJson = Object.fromEntries(formData);
+      const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      if (!validateForm(e.target)) {
+        return toast.error("Invalid inputs");
+      }
+
+      if (!regex.test(formJson.email.trim())) {
+        return toast.error("Invalid Email");
+      }
+
+      if (formJson.password !== formJson.confirmPassword) {
+        return toast.error("Password is not matched");
+      }
+
+      if (formJson.password.length < 6) {
+        return toast.error("Password is minium 6 charcters required");
+      }
+
+      localStorage.setItem(
+        "auth",
+        JSON.stringify({
+          email: formJson.email,
+          password: formJson.password,
+          isLogin: false,
+        })
+      );
+
+      navigate("/login");
+      toast.success("Signup successfully");
+    } catch (err) {
+      console.error(err);
+    }
+  };
   return (
     <div className="min-h-svh flex flex-col items-center justify-center">
       <div className="flex flex-col gap-6">
@@ -27,7 +69,7 @@ const SignupPage = () => {
             <CardDescription>Welcome</CardDescription>
           </CardHeader>
           <CardContent>
-            <form>
+            <form onSubmit={signUpBtnHandler} noValidate>
               <div className="grid gap-6">
                 <div className="grid gap-6">
                   <div className="grid gap-3">
@@ -35,6 +77,7 @@ const SignupPage = () => {
                     <Input
                       id="email"
                       type="email"
+                      name="email"
                       placeholder="m@example.com"
                       required
                     />
@@ -46,16 +89,18 @@ const SignupPage = () => {
                     <Input
                       id="password"
                       type="password"
+                      name="password"
                       required
                       placeholder="password"
                     />
                   </div>
                   <div className="grid gap-3">
                     <div className="flex items-center">
-                      <Label htmlFor="password">Confirm Password</Label>
+                      <Label htmlFor="confirmPassword">Confirm Password</Label>
                     </div>
                     <Input
-                      id="password"
+                      id="confirmPassword"
+                      name="confirmPassword"
                       type="password"
                       required
                       placeholder="confirm password"
@@ -70,9 +115,12 @@ const SignupPage = () => {
                 </div>
                 <div className="text-center text-sm">
                   Already you have an account?{" "}
-                  <a href="#" className="underline underline-offset-4">
+                  <span
+                    className="underline underline-offset-4 cursor-pointer"
+                    onClick={() => navigate("/login")}
+                  >
                     Login
-                  </a>
+                  </span>
                 </div>
               </div>
             </form>
