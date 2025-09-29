@@ -1,0 +1,13 @@
+{
+  "hosting": {
+    "site": "auth-react-8943",
+    "public": "dist",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}

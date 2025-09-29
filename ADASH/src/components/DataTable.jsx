@@ -25,6 +25,14 @@ import {
 } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -50,6 +58,10 @@ import {
   IconGripVertical,
   IconCircleCheckFilled,
   IconLoader,
+  IconChevronsLeft,
+  IconChevronLeft,
+  IconChevronRight,
+  IconChevronsRight,
 } from "@tabler/icons-react";
 
 const DragHandle = ({ id }) => {
@@ -67,7 +79,12 @@ const EmployeeDrawer = ({ employee }) => {
   return (
     <Drawer direction={isMobile ? "bottom" : "right"}>
       <DrawerTrigger asChild>
-        <Button variant="link">{employee.name}</Button>
+        <Button
+          variant="link"
+          className="text-foreground p-0 hover:text-primary"
+        >
+          {employee.name}
+        </Button>
       </DrawerTrigger>
       <DrawerContent>
         <DrawerHeader>
@@ -91,6 +108,7 @@ const EmployeeDrawer = ({ employee }) => {
             <b>Status:</b>{" "}
             <Badge
               variant={employee.status === "Active" ? "default" : "outline"}
+              className="text-foreground"
             >
               {employee.status}
             </Badge>
@@ -115,7 +133,7 @@ const columns = [
   {
     id: "select",
     header: ({ table }) => (
-      <div className="flex items-center justify-center">
+      <div className="items-center justify-center hidden">
         <Checkbox
           checked={
             table.getIsAllPageRowsSelected() ||
@@ -126,7 +144,7 @@ const columns = [
       </div>
     ),
     cell: ({ row }) => (
-      <div className="flex items-center justify-center">
+      <div className="hidden items-center justify-center">
         <Checkbox
           checked={row.getIsSelected()}
           onCheckedChange={(value) => row.toggleSelected(!!value)}
@@ -148,20 +166,22 @@ const columns = [
     header: "Status",
     cell: ({ row }) =>
       row.original.status === "Active" ? (
-        <Badge variant="default">{row.original.status}</Badge>
+        <Badge variant="default" className="text-foreground">
+          {row.original.status}
+        </Badge>
       ) : (
         <Badge variant="outline">{row.original.status}</Badge>
       ),
   },
-  {
-    id: "actions",
-    cell: () => (
-      <Button variant="ghost" size="icon">
-        <IconDotsVertical />
-        <span className="sr-only">Actions</span>
-      </Button>
-    ),
-  },
+  // {
+  //   id: "actions",
+  //   cell: () => (
+  //     <Button variant="ghost" size="icon">
+  //       <IconDotsVertical />
+  //       <span className="sr-only">Actions</span>
+  //     </Button>
+  //   ),
+  // },
 ];
 
 const DraggableRow = ({ row, dataIds }) => {
@@ -217,7 +237,7 @@ export const EmployeeDataTable = ({ data: initialData }) => {
     >
       <SortableContext items={dataIds} strategy={verticalListSortingStrategy}>
         <Table className="border">
-          <TableHeader className="bg-muted sticky top-0 z-10">
+          <TableHeader className="bg-muted sticky top-0 z-10 ">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
@@ -239,6 +259,83 @@ export const EmployeeDataTable = ({ data: initialData }) => {
             ))}
           </TableBody>
         </Table>
+        <div className="flex items-center justify-between px-4 mt-4">
+          <div className="text-muted-foreground hidden flex-1 text-sm lg:flex">
+            {table.getFilteredSelectedRowModel().rows.length} of{" "}
+            {table.getFilteredRowModel().rows.length} row(s) selected.
+          </div>
+          <div className="flex w-full items-center gap-8 lg:w-fit">
+            <div className="hidden items-center gap-2 lg:flex">
+              <Label htmlFor="rows-per-page" className="text-sm font-medium">
+                Rows per page
+              </Label>
+              <Select
+                value={`${table.getState().pagination.pageSize}`}
+                onValueChange={(value) => {
+                  table.setPageSize(Number(value));
+                }}
+              >
+                <SelectTrigger size="sm" className="w-20" id="rows-per-page">
+                  <SelectValue
+                    placeholder={table.getState().pagination.pageSize}
+                  />
+                </SelectTrigger>
+                <SelectContent side="top">
+                  {[10, 20, 30, 40, 50].map((pageSize) => (
+                    <SelectItem key={pageSize} value={`${pageSize}`}>
+                      {pageSize}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex w-fit items-center justify-center text-sm font-medium">
+              Page {table.getState().pagination.pageIndex + 1} of{" "}
+              {table.getPageCount()}
+            </div>
+            <div className="ml-auto flex items-center gap-2 lg:ml-0">
+              <Button
+                variant="outline"
+                className="hidden h-8 w-8 p-0 lg:flex"
+                onClick={() => table.setPageIndex(0)}
+                disabled={!table.getCanPreviousPage()}
+              >
+                <span className="sr-only">Go to first page</span>
+                <IconChevronsLeft />
+              </Button>
+              <Button
+                variant="outline"
+                className="size-8"
+                size="icon"
+                onClick={() => table.previousPage()}
+                disabled={!table.getCanPreviousPage()}
+              >
+                <span className="sr-only">Go to previous page</span>
+                <IconChevronLeft />
+              </Button>
+              <Button
+                variant="outline"
+                className="size-8"
+                size="icon"
+                onClick={() => table.nextPage()}
+                disabled={!table.getCanNextPage()}
+              >
+                <span className="sr-only">Go to next page</span>
+                <IconChevronRight />
+              </Button>
+              <Button
+                variant="outline"
+                className="hidden size-8 lg:flex"
+                size="icon"
+                onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+                disabled={!table.getCanNextPage()}
+              >
+                <span className="sr-only">Go to last page</span>
+                <IconChevronsRight />
+              </Button>
+            </div>
+          </div>
+        </div>
       </SortableContext>
     </DndContext>
   );
@@ -391,6 +488,33 @@ export const employeeData = [
   },
   {
     id: 17,
+    name: "Michael Lewis",
+    role: "Developer",
+    email: "michael17@example.com",
+    contact: "8529637410",
+    experience: "3 years",
+    status: "Active",
+  },
+  {
+    id: 18,
+    name: "Michael Lewis",
+    role: "Developer",
+    email: "michael17@example.com",
+    contact: "8529637410",
+    experience: "3 years",
+    status: "Active",
+  },
+  {
+    id: 19,
+    name: "Michael Lewis",
+    role: "Developer",
+    email: "michael17@example.com",
+    contact: "8529637410",
+    experience: "3 years",
+    status: "Active",
+  },
+  {
+    id: 20,
     name: "Michael Lewis",
     role: "Developer",
     email: "michael17@example.com",

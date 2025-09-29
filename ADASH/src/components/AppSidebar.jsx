@@ -4,7 +4,6 @@ import {
   IconFileAi,
   IconFileDescription,
 } from "@tabler/icons-react";
-
 import { HiOutlineCalendarDays } from "react-icons/hi2";
 import { PiMicrosoftTeamsLogo } from "react-icons/pi";
 import { FiActivity } from "react-icons/fi";
@@ -16,7 +15,6 @@ import { LuContact } from "react-icons/lu";
 import { IoSettingsOutline } from "react-icons/io5";
 import { RiUserCommunityLine } from "react-icons/ri";
 import { BiSupport } from "react-icons/bi";
-
 import { NavDocuments } from "@/components/NavDocuments";
 import { NavMain } from "@/components/NavMain";
 import { NavSecondary } from "@/components/NavSecondary";
@@ -44,7 +42,9 @@ export const AppSidebar = ({ ...props }) => {
             >
               <a href="#">
                 <GiHospitalCross className="!size-5" />
-                <span className="text-base font-semibold">ADASH .</span>
+                <span className="text-base font-semibold text-primary">
+                  ADASH .
+                </span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>

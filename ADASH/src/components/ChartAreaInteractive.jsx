@@ -99,7 +99,7 @@ export const EmployeePerformance = () => {
             />
             <Bar
               dataKey="tasksCompleted"
-              fill="var(--color-tasks)"
+              fill="var(--primary)"
               radius={[4, 4, 0, 0]}
             />
           </BarChart>

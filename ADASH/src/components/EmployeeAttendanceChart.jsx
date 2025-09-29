@@ -22,10 +22,10 @@ import {
 export const description = "Employee Attendance Pie Chart";
 
 const chartData = [
-  { status: "Present", count: 120, color: "hsl(var(--chart-1))" },
-  { status: "Absent", count: 15, color: "hsl(var(--chart-2))" },
-  { status: "On Leave", count: 8, color: "hsl(var(--chart-3))" },
-  { status: "Holiday", count: 5, color: "hsl(var(--chart-4))" },
+  { status: "Present", count: 120, color: "var(--chart-1)" },
+  { status: "Absent", count: 15, color: "var(--chart-2)" },
+  { status: "On Leave", count: 8, color: "var(--chart-3)" },
+  { status: "Holiday", count: 5, color: "var(--chart-4)" },
 ];
 
 export function EmployeeAttendanceChart() {
@@ -64,7 +64,7 @@ export function EmployeeAttendanceChart() {
             </PieChart>
           </ResponsiveContainer>
 
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center">
+          <div className="absolute top-[45%] left-1/2 -translate-x-1/2 -translate-y-1/2 text-center">
             <div className="text-3xl font-bold">{totalEmployees}</div>
             <div className="text-sm text-muted-foreground">Total Employees</div>
           </div>
